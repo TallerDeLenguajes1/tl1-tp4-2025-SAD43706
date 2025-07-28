@@ -15,10 +15,13 @@ Nodo *crearLista();
 Tarea cargarTarea();
 Nodo *CrearNodo(Tarea T);
 void enLista(Nodo **Inicio,Nodo *Nodo);
-void mostrarLists();
+void mostrarLists(Nodo *Inicio);
+Nodo *BNPQ(Nodo **Lista,int id);//Busqueda Nodo Para Sacar
+Nodo *buscarNodo(Nodo *buscado,int id);
+void EliminarNodo(Nodo *nodo);
 int main(){
-    char estado='s';
-    int idx=1000;
+    char estado='s',estado2;
+    int idx=1000,idBuscada;
     Nodo *InicioP;
     Nodo *InicioR;
     InicioP=crearLista();
@@ -34,7 +37,19 @@ int main(){
        scanf(" %c",&estado);
        getchar();
     } while (tolower(estado)=='s');
-    
+    mostrarLists(InicioP);
+    printf("Apriete (y/Y) si desea pasar una o mas Tareas de Pendientes a Realizadas, (n/N) sino\n");
+    scanf("%c",&estado2);
+    while (tolower(estado2)=='y')
+    {
+        printf("Ingrese la ID de la Tarea que quiere colocar en la Lista de Realizadas:");
+        scanf("%i",&idBuscada);
+        enLista(&InicioR,BNPQ(&InicioP,idBuscada));
+        puts("Desea Ingresar otra tarea Realizada(y/n)");
+        scanf(" %c",&estado2);  
+    }
+    mostrarLists(InicioR);
+    return 0;
 }
 Nodo *crearLista(){
     return NULL;
@@ -81,17 +96,48 @@ void mostrarLists(Nodo *Inicio){
     }
     else
     {
-        while (Inicio!=NULL)
+        while (nodoMos!=NULL)
         {
-            printf("ID\n:%i",nodoMos->T.TareaID);
-            /*TamDes=strlen(nodoMos->T.Descripcion);
-            for ( i = 0; i < TamDes; i++)
-            {
-            
-            }*/
+            printf("-------------------------\n");
+            printf("ID:%i\n",nodoMos->T.TareaID);
             printf("DESCRIPCION:%s\n",nodoMos->T.Descripcion);
             printf("DURACION:%i\n",nodoMos->T.Duracion);
+            printf("-------------------------\n");
             nodoMos=nodoMos->Siguiente;
         }    
     }
+}
+Nodo *BNPQ(Nodo **Lista,int id){
+    Nodo *nodoAux = (*Lista);
+    Nodo *nodoAnt = NULL;
+    while (nodoAux != NULL && nodoAux->T.TareaID != id)
+    {
+        nodoAnt = nodoAux;
+        nodoAux = nodoAux->Siguiente;
+    }
+    if (nodoAux != NULL)
+    {
+        if (nodoAux == (*Lista))
+        {
+            (*Lista) = nodoAux->Siguiente;
+        }
+        else
+        {
+            nodoAnt->Siguiente = nodoAux->Siguiente;
+        }
+        nodoAux->Siguiente = NULL;
+    }
+    return (nodoAux);
+}
+Nodo *buscarNodo(Nodo *Start, int IdBuscado){
+    Nodo *Aux = Start;
+    while(Aux && Aux -> T.TareaID != IdBuscado)
+    {
+        Aux = Aux -> Siguiente;
+    }      
+    return Aux;
+}
+void EliminarNodo(Nodo *nodo)
+{
+    if (nodo) free(nodo);
 }
