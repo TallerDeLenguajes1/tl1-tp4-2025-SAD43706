@@ -17,13 +17,16 @@ Nodo *CrearNodo(Tarea T);
 void enLista(Nodo **Inicio,Nodo *Nodo);
 void mostrarLists(Nodo *Inicio);
 Nodo *BNPQ(Nodo **Lista,int id);//Busqueda Nodo Para Sacar
-Nodo *buscarNodo(Nodo *buscado,int id);
+Nodo *buscarNodoporId(Nodo *buscado,int id);
+Nodo *buscarNodoporPalabra(Nodo *Start, char *clave);
 void EliminarNodo(Nodo *nodo);
+
 int main(){
     char estado='s',estado2;
-    int idx=1000,idBuscada;
+    int idx=1000,idBuscada,eleccion;
     Nodo *InicioP;
     Nodo *InicioR;
+    Nodo *Resultado;
     InicioP=crearLista();
     InicioR=crearLista();
     do
@@ -49,6 +52,56 @@ int main(){
         scanf(" %c",&estado2);  
     }
     mostrarLists(InicioR);
+    printf("Desea Buscar un Nodo por Id o por palabra clave?? 1=id,2=Palabra Clave");
+    scanf("%i",&eleccion);
+    if (eleccion==1)
+    {
+        int idBusq;
+        printf("Ingrese La ID a Buscar:");
+        scanf("%i",&idBusq);
+        Resultado=buscarNodoporId(InicioP,idBusq);
+        if (Resultado!=NULL)
+        {
+            mostrarLists(Resultado);  
+            printf("El nodo se encuentra en la Lista de tareas pendientes"); 
+        }else{
+            Resultado=buscarNodoporId(InicioR,idBusq);
+            if (Resultado!=NULL)
+            {
+                mostrarLists(Resultado);
+                printf("El nodo se encuentra en la Lista de tareas realizadas");
+            }
+            else
+            {
+                printf("El nodo NO se encuentra en ninguna Lista");
+            }
+        } 
+    }else if (eleccion==2)
+    {
+        char clave[15];
+        printf("Ingrese La Palabra a Buscar:");
+        scanf("%s",clave);
+        int tamClave=strlen(clave)+1;
+        char *clavex;
+        clavex=(char*)malloc(tamClave*sizeof(char));
+        strcpy(clavex,clave);
+        Resultado=buscarNodoporPalabra(InicioP,clavex);
+        if (Resultado!=NULL)
+        {
+            mostrarLists(Resultado);  
+            printf("El nodo se encuentra en la Lista de tareas pendientes"); 
+        }else{
+            Resultado=buscarNodoporPalabra(InicioR,clavex);
+            if (Resultado!=NULL)
+            {
+                mostrarLists(Resultado);
+                printf("El nodo se encuentra en la Lista de tareas realizadas");
+            }else
+            {
+                printf("El nodo NO se encuentra en ninguna Lista");
+            } 
+        } 
+    }
     return 0;
 }
 Nodo *crearLista(){
@@ -129,13 +182,33 @@ Nodo *BNPQ(Nodo **Lista,int id){
     }
     return (nodoAux);
 }
-Nodo *buscarNodo(Nodo *Start, int IdBuscado){
+Nodo *buscarNodoporId(Nodo *Start, int IdBuscado){
     Nodo *Aux = Start;
     while(Aux && Aux -> T.TareaID != IdBuscado)
     {
         Aux = Aux -> Siguiente;
     }      
-    return Aux;
+    if (Aux!=NULL)
+    {
+        return Aux;
+    }
+    else{
+        return NULL;
+    }
+}
+Nodo *buscarNodoporPalabra(Nodo *Start, char *clave){
+    Nodo *Aux = Start;
+    while(Aux && strstr(Aux->T.Descripcion,clave))
+    {
+        Aux = Aux -> Siguiente;
+    }      
+    if (Aux!=NULL)
+    {
+        return Aux;
+    }
+    else{
+        return NULL;
+    }
 }
 void EliminarNodo(Nodo *nodo)
 {
