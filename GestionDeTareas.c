@@ -20,6 +20,7 @@ Nodo *BNPQ(Nodo **Lista,int id);//Busqueda Nodo Para Sacar
 Nodo *buscarNodoporId(Nodo *buscado,int id);
 Nodo *buscarNodoporPalabra(Nodo *Start, char *clave);
 void EliminarNodo(Nodo *nodo);
+void liberarLista(Nodo *Inicio);
 
 int main(){
     char estado='s',estado2;
@@ -100,8 +101,12 @@ int main(){
             {
                 printf("El nodo NO se encuentra en ninguna Lista");
             } 
-        } 
+        }
+        free(clavex); 
     }
+    liberarLista(InicioP);
+    liberarLista(InicioR);
+     
     return 0;
 }
 Nodo *crearLista(){
@@ -212,5 +217,19 @@ Nodo *buscarNodoporPalabra(Nodo *Start, char *clave){
 }
 void EliminarNodo(Nodo *nodo)
 {
-    if (nodo) free(nodo);
+    if (nodo) 
+    {
+        free(nodo->T.Descripcion);
+        free(nodo);
+    }
+    
+}
+void liberarLista(Nodo *Inicio) {
+    Nodo *aux;
+    while (Inicio != NULL) {
+        aux = Inicio;
+        Inicio = Inicio->Siguiente;
+        free(aux->T.Descripcion); // liberar descripción
+        free(aux);                // liberar nodo
+    }
 }
